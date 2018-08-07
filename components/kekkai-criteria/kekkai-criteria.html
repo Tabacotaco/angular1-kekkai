@@ -1,0 +1,38 @@
+<form class="kekkai-criteria" ng-submit="$kekkaiCriteria.onSubmit()">
+    <button type="submit"></button>
+
+    <!-- Toolbar -->
+    <nav class="navbar kekkai-navbar hbar">
+        <ul class="kekkai-nav">
+            <li>
+                <a class="btn kekkai-btn" ng-click="$kekkaiCriteria.onSubmit()">
+                    <span class="glyphicon glyphicon-search"></span>
+                    <ng-container ng-if="'def' !== $kekkaiCriteria.windowSize">{{'KEKKAI_BTN_SEARCH' | translate}}</ng-container>
+                </a>
+            </li>
+
+            <li>
+                <a class="btn kekkai-btn" ng-click="$kekkaiCriteria.params = $kekkaiCriteria.defaultParams(); $kekkaiCriteria.onSubmit()">
+                    <span class="glyphicon glyphicon-repeat"></span>
+                    <ng-container ng-if="'def' !== $kekkaiCriteria.windowSize">{{'KEKKAI_BTN_CLEAR_PARAMS' | translate}}</ng-container>
+                </a>
+            </li>
+
+            <li>
+                <a class="btn kekkai-btn"
+                    ng-class="{'btn-primary': $kekkaiCriteria.isVisible}"
+                    ng-click="$kekkaiCriteria.isVisible = !$kekkaiCriteria.isVisible">
+
+                    <span class="glyphicon glyphicon-align-justify"></span>
+                    <ng-container ng-if="'def' !== $kekkaiCriteria.windowSize">{{'KEKKAI_BTN_ADV_QUERY' | translate}}</ng-container>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Fields -->
+    <div ng-show="$kekkaiCriteria.isVisible">
+        <ng-transclude></ng-transclude>
+        <hr/>
+    </div>
+</form>

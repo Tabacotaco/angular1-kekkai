@@ -1,0 +1,101 @@
+<div class="kekkai-column" ng-class="$kekkaiField.generateColumnCls()" ng-switch="$kekkaiField.layoutType">
+
+    <!-- TODO - Form Column -->
+    <div class="form-group" ng-switch-when="FORM">
+        <label ng-class="{'kekkai-required': $kekkaiField.isRequiredVisible}" ng-style="{
+            width       : 'def' === $kekkaiField.container.windowSize? '100%' : $kekkaiField.labelWidth,
+            'min-width' : $kekkaiField.labelWidth
+        }">
+            {{$kekkaiField.field.label | translate}}
+        </label>
+
+        <ng-transclude class="editor-transclude"
+            kekkai-invalid-tip="$kekkaiField"
+            ng-if="'EDITOR' === $kekkaiField.contentCase"
+            ng-transclude-slot="editor"
+            ng-class="{'kekkai-invalid': !$kekkaiField.isValueValid}">
+        </ng-transclude>
+
+        <div ng-if="'EDITOR' !== $kekkaiField.contentCase"
+            ng-switch="$kekkaiField.contentCase"
+            ng-disabled="$kekkaiField.dataview.isEditable"
+            class="{{:: 'form-control ' + $kekkaiField.textalignCls}}">
+
+            <ng-container ng-switch-when="EMPTY">&nbsp;</ng-container>
+            <ng-container ng-switch-when="DEFAULT">{{$kekkaiField.dataview.kekkaiData[$kekkaiField.fieldName]}}</ng-container>
+
+            <ng-transclude ng-switch-when="DISPLAY" ng-transclude-slot="display"></ng-transclude>
+
+            <ng-container ng-switch-when="DEFAULT_FORMAT">
+                {{$kekkaiField.dataview.kekkaiData[$kekkaiField.fieldName] | date: $kekkaiField.field.dateFormat}}
+            </ng-container>
+        </div>
+    </div>
+
+    <!-- TODO - Grid Column -->
+    <div class="grid-group"
+        ng-switch-when="GRID"
+        ng-class="{'kekkai-uneditable': !$kekkaiField.isEditable, 'is-editing': 'EDITOR' === $kekkaiField.contentCase}"
+        ng-click="'EDITOR' === $kekkaiField.contentCase? null : $kekkaiField.onSwitchEditingMode(true, $event)"
+        ng-init="$kekkaiField.dataview.kekkaiData.$isVirtual? $kekkaiField.onInit() : null">
+
+        <ng-transclude class="editor-transclude kekkai-switch-editor"
+            kekkai-auto-focus
+            kekkai-invalid-tip="$kekkaiField"
+            ng-if="'EDITOR' === $kekkaiField.contentCase"
+            ng-transclude-slot="editor"
+            ng-class="{'kekkai-invalid': !$kekkaiField.isValueValid}"
+            ng-keydown="$kekkaiField.onEditOtherField($event)">
+        </ng-transclude>
+
+        <span ng-if="'EDITOR' !== $kekkaiField.contentCase" ng-switch="$kekkaiField.contentCase">
+            <ng-container ng-switch-when="EMPTY">&nbsp;</ng-container>
+            <ng-container ng-switch-when="DEFAULT">{{$kekkaiField.dataview.kekkaiData[$kekkaiField.fieldName]}}</ng-container>
+
+            <ng-transclude ng-switch-when="DISPLAY" ng-transclude-slot="display"></ng-transclude>
+
+            <ng-container ng-switch-when="DEFAULT_FORMAT">
+                {{$kekkaiField.dataview.kekkaiData[$kekkaiField.fieldName] | date: $kekkaiField.field.dateFormat}}
+            </ng-container>
+        </span>
+    </div>
+
+    <!-- TODO - Card Column -->
+    <fieldset ng-switch-when="CARD"
+        ng-click="'EDITOR' === $kekkaiField.contentCase? null : $kekkaiField.onSwitchEditingMode(true, $event)"
+        ng-class="{
+            'kekkai-uneditable' : !$kekkaiField.isEditable,
+            'is-editing'        : 'EDITOR' === $kekkaiField.contentCase,
+            'is-invalid'        : !$kekkaiField.isValueValid
+        }">
+
+        <legend ng-class="{'kekkai-required': $kekkaiField.isEditable && $kekkaiField.field.isRequired}">
+            {{$kekkaiField.field.label | translate}}
+
+            <span class="glyphicon" ng-class="{
+                'glyphicon-pencil'           : 'EDITOR' === $kekkaiField.contentCase,
+                'glyphicon-exclamation-sign' : 'EDITOR' !== $kekkaiField.contentCase && !$kekkaiField.isValueValid
+            }"></span>
+        </legend>
+
+        <div ng-switch="$kekkaiField.contentCase">
+            <ng-container ng-switch-when="EMPTY">&nbsp;</ng-container>
+            <ng-container ng-switch-when="DEFAULT">{{$kekkaiField.dataview.kekkaiData[$kekkaiField.fieldName]}}</ng-container>
+
+            <ng-transclude ng-switch-when="DISPLAY" ng-transclude-slot="display"></ng-transclude>
+
+            <ng-container ng-switch-when="DEFAULT_FORMAT">
+                {{$kekkaiField.dataview.kekkaiData[$kekkaiField.fieldName] | date: $kekkaiField.field.dateFormat}}
+            </ng-container>
+
+            <ng-transclude ng-switch-when="EDITOR"
+                class="editor-transclude kekkai-switch-editor"
+                kekkai-auto-focus
+                kekkai-invalid-tip="$kekkaiField"
+                ng-transclude-slot="editor"
+                ng-class="{'kekkai-invalid': !$kekkaiField.isValueValid}"
+                ng-keydown="$kekkaiField.onEditOtherField($event)">
+            </ng-transclude>
+        </div>
+    </fieldset>
+</div>

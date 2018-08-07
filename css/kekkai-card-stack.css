@@ -1,0 +1,123 @@
+div.kekkai-content.card-content {
+    padding: 4px;
+    overflow-y: scroll;
+    overflow-x: auto;
+    min-height: 280px;
+    max-height: calc(100vh - 180px);
+    background-color: #EFF6FA;
+}
+
+/* Card Stack Data-Navbar */
+@media all {
+    nav.kekkai-navbar.kekkai-card-header {
+        background-color: unset !important;
+        border-radius: 4px 4px 0 0 !important;
+        border: unset;
+        border-bottom: 1px solid #eee;
+    }
+}
+
+/* Card Stack */
+@media all {
+    /* Data View */
+    kekkai-dataview > div.card-stack { padding: 4px; }
+    
+    kekkai-dataview > div.card-stack label.kekkai-check-cell {
+        width: 100%;
+        display: block;
+    }
+    
+    kekkai-dataview > div.card-stack > div.thumbnail {
+        background-color: white;
+        margin-bottom: 0;
+        padding-bottom: 12px;
+        -webkit-box-shadow: 0 5px 5px rgba(0, 0, 0, .15);
+        box-shadow: 0 5px 5px rgba(0, 0, 0, .15);
+    }
+
+    kekkai-dataview > div.card-stack > div.thumbnail > div.caption {
+        background-color: white;
+        border-radius: 4px;
+    }
+    
+    kekkai-dataview > div.card-stack > div.thumbnail > div.caption > div.row {
+        padding: 2px;
+    }
+
+    kekkai-dataview > div.card-stack:hover > div.thumbnail,
+    kekkai-dataview > div.card-stack:focus > div.thumbnail,
+    kekkai-dataview > div.card-stack:active > div.thumbnail {
+        background-color: #B9E3FF !important;
+    }
+
+    /* Card Column */
+    div.kekkai-content.card-content div.kekkai-column.row-1 > fieldset > div { height:  34px; }
+    div.kekkai-content.card-content div.kekkai-column.row-2 > fieldset > div { height: 105px; }
+    div.kekkai-content.card-content div.kekkai-column.row-3 > fieldset > div { height: 176px; }
+    div.kekkai-content.card-content div.kekkai-column.row-4 > fieldset > div { height: 247px; }
+    div.kekkai-content.card-content div.kekkai-column.row-5 > fieldset > div { height: 318px; }
+    div.kekkai-content.card-content div.kekkai-column.row-6 > fieldset > div { height: 389px; }
+
+    kekkai-field > div.kekkai-column.kekkai-textalign-left   > fieldset > div { justify-content: flex-start !important; }
+    kekkai-field > div.kekkai-column.kekkai-textalign-center > fieldset > div { justify-content: center !important; }
+    kekkai-field > div.kekkai-column.kekkai-textalign-right  > fieldset > div { justify-content: flex-end !important; }
+
+    kekkai-field > div.kekkai-column > fieldset {
+        margin: 1px;
+        border-radius: 4px;
+        padding: 6px 8px;
+        color: black;
+        border: 1px solid #bbdceb;
+    }
+
+    kekkai-field > div.kekkai-column > fieldset > legend {
+        width: auto;
+        font-size: 14px;
+        padding: 0 8px;
+        border: 0;
+        margin: 0;
+        font-weight: 700;
+        color: #337ab7;
+    }
+
+    kekkai-field > div.kekkai-column > fieldset > div {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Online Editing */
+    div.kekkai-content.card-content.online-editing kekkai-field > div.kekkai-column > fieldset:not(.kekkai-uneditable) {
+        cursor: pointer;
+    }
+
+    div.kekkai-content.card-content.online-editing kekkai-field > div.kekkai-column > fieldset.kekkai-uneditable {
+        border-color: #ccc;
+        color: #888;
+    }
+
+    div.kekkai-content.card-content.online-editing kekkai-field > div.kekkai-column > fieldset.kekkai-uneditable > legend {
+        color: #3c763d;
+    }
+
+    div.kekkai-content.card-content.online-editing kekkai-field > div.kekkai-column > fieldset.is-invalid {
+        border-color: #a94442;
+    }
+
+    div.kekkai-content.card-content.online-editing kekkai-field > div.kekkai-column > fieldset.is-invalid > legend {
+        color: #a94442;
+    }
+
+    div.kekkai-content.card-content.online-editing kekkai-field > div.kekkai-column > fieldset > legend.kekkai-required::before {
+        content: "*";
+        margin-right: 4px;
+        color: #a94442;
+    }
+
+    div.kekkai-content.card-content.online-editing kekkai-editor > input,
+    div.kekkai-content.card-content.online-editing kekkai-editor > select,
+    div.kekkai-content.card-content.online-editing kekkai-editor > textarea,
+    div.kekkai-content.card-content.online-editing kekkai-editor > div.kekkai-clear-field > input,
+    div.kekkai-content.card-content.online-editing kekkai-editor > div.kekkai-clear-field > textarea {
+        border-width: 0;
+    }
+}

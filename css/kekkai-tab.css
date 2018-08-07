@@ -1,0 +1,47 @@
+div.kekkai-tab > ul.nav.nav-tabs {
+    display: flex;
+    background-color: #d9ecf5;
+    padding: 6px 12px;
+    padding-bottom: 0;
+    border: 1px solid #bbdceb;
+    border-radius: 4px 4px 0 0;
+    max-width: 100%;
+    overflow: hidden;
+    border-bottom-width: 0;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
+}
+
+div.kekkai-tab > ul.nav.nav-tabs > li {
+    display: inline-flex;
+}
+
+div.kekkai-tab > ul.nav.nav-tabs > li > a {
+    cursor: pointer;
+    white-space: nowrap;
+    margin-top: 1px;
+    padding: 6px 15px;
+}
+
+div.kekkai-tab > ul.nav.nav-tabs > li.active > a {
+    border-left-color: #bbdceb;
+    border-right-color: #bbdceb;
+}
+
+div.kekkai-tab > ul.nav.nav-tabs > li:not(.active) > a:hover {
+    color: white;
+	background-color: #286090;
+}
+
+div.kekkai-tab > div.tab-content {
+    border: 1px solid #bbdceb;
+    border-radius: 0 0 4px 4px;
+    border-top-width: 0;
+    padding: 12px;
+}
+
+div.kekkai-tab > div.tab-content > div.tab-pane {
+    margin-top: 0;
+}

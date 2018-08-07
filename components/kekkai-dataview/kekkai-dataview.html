@@ -1,0 +1,144 @@
+<!-- FORM PANEL -->
+<div ng-if="'FORM' === $kekkaiDataview.container.layoutType"
+    class="form-panel container-fluid"
+    data-uid="{{$kekkaiDataview.uid}}">
+
+    <div ng-transclude="field" class="row"></div>
+</div>
+
+<!-- GRID LIST -->
+<div ng-if="'GRID' === $kekkaiDataview.container.layoutType" class="kekkai-list dropdown" data-uid="{{$kekkaiDataview.uid}}" ng-class="{
+    'kekkai-invalid-row': $kekkaiDataview.container.isOnlineEditing && !$kekkaiDataview.kekkaiData.$isDataValid
+}">
+    <label class="grid-selection" ng-switch="$kekkaiDataview.selectionCase">
+        <input type="checkbox" ng-switch-when="SELECTION" class="grid-selection-box" ng-model="$kekkaiDataview.isSelected" />
+
+        <input type="checkbox"
+            class="grid-selection-box"
+            ng-switch-when="EDITING"
+            ng-model="$kekkaiDataview.isAllowedCommit"
+            ng-init="$kekkaiDataview.isAllowedCommit = true" />
+
+        <span ng-switch-default></span>
+    </label>
+
+    <div id="{{:: $kekkaiDataview.uid}}" ng-class="{
+        'row-clickable': !$kekkaiDataview.container.isOnlineEditing && !$kekkaiDataview.container.isSelectionMode
+            && $kekkaiDataview.container.todoGroup.getAllowedTodos('ROW_CLICK', $kekkaiDataview.kekkaiData).length > 0
+    }">
+        <div ng-transclude="field" class="row" ng-dblclick="$kekkaiDataview.onRowClick()"></div>
+
+        <ng-container ng-init="$kekkaiDataview.doReorderFields($kekkaiDataview.container.virtuals)"></ng-container>
+    </div>
+
+    <ul ng-if="$kekkaiDataview.rowMenuCount > 0" class="kekkai-row-menu dropdown-menu dropdown-menu-right">
+        <li ng-repeat="menuBtn in $kekkaiDataview.container.todoGroup.getAllowedTodos('ROW_CLICK', $kekkaiDataview.kekkaiData)">
+            <a ng-click="menuBtn.execute($kekkaiDataview.kekkaiData); $kekkaiDataview.doCloseRowMenu()">
+                <span class="{{:: menuBtn.icon}}"></span> {{:: menuBtn.text | translate}}
+            </a>
+        </li>
+
+        <li class="divider"></li>
+
+        <li>
+            <a ng-click="$kekkaiDataview.doCloseRowMenu()">
+                <span class="glyphicon glyphicon-ban-circle"></span> {{:: 'KEKKAI_BTN_CLOSE' | translate}}
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- CARD STACK -->
+<div ng-if="'CARD' === $kekkaiDataview.container.layoutType"
+    class="card-stack"
+    ng-class="$kekkaiDataview.cardCls"
+    data-uid="{{$kekkaiDataview.uid}}">
+
+    <div class="thumbnail">
+        <nav class="navbar kekkai-navbar kekkai-card-header" ng-switch="$kekkaiDataview.selectionCase">
+            <ul class="kekkai-nav" ng-switch-when="SELECTION">
+                <li>
+                    <a class="btn kekkai-btn kekkai-selection-box" ng-click="$kekkaiDataview.isSelected = !$kekkaiDataview.isSelected">
+                        <span class="glyphicon" ng-class="{
+                            'glyphicon-check'     : $kekkaiDataview.isSelected,
+                            'glyphicon-unchecked' : !$kekkaiDataview.isSelected
+                        }"></span>
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="kekkai-nav" ng-switch-when="EDITING">
+                <li ng-init="$kekkaiDataview.isAllowedCommit = true">
+                    <a class="btn kekkai-btn kekkai-selection-box" ng-click="$kekkaiDataview.isAllowedCommit = !$kekkaiDataview.isAllowedCommit">
+                        <span class="glyphicon" ng-class="{
+                            'glyphicon-check'     : $kekkaiDataview.isAllowedCommit,
+                            'glyphicon-unchecked' : !$kekkaiDataview.isAllowedCommit
+                        }"></span>
+                    </a>
+                </li>
+            </ul><hr/>
+
+            <!-- ROW-MENU -->
+            <ul ng-if="!$kekkaiDataview.container.isOnlineEditing && $kekkaiDataview.rowMenuCount > 0" class="kekkai-nav">
+                <li class="dropdown">
+                    <a class="btn kekkai-btn" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="glyphicon glyphicon-menu-down"></span>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li ng-repeat="menuBtn in $kekkaiDataview.container.todoGroup.getAllowedTodos('ROW_MENU', $kekkaiDataview.kekkaiData)">
+                            <a ng-click="menuBtn.execute($kekkaiDataview.kekkaiData)">
+                                <span class="{{:: menuBtn.icon}}"></span> {{:: menuBtn.text | translate}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="caption">
+            <div ng-transclude="field" class="row"></div>
+        </div>
+    </div>
+</div>
+
+<!-- EDITING MODAL -->
+<div kekkai-editor-modal ng-if="$kekkaiDataview.container.isEditModalVisible"
+    id="{{::$kekkaiDataview.modalID}}"
+    class="kekkai-modal editing-modal modal fade">
+
+    <div class="modal-dialog">
+        <div ng-if="$kekkaiDataview.container.todoGroup.isEditing" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+                <h4 class="modal-title">
+                    <span class="{{::$kekkaiDataview.container.todoGroup.editingTodo.icon}}"></span>
+                    {{$kekkaiDataview.container.todoGroup.editingTodo.text | translate}}
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="kekkai-dataview form-panel container-fluid">
+                    <div class="row" ng-transclude="field" layout-type="FORM" layout-mode="COMPLETE"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span> {{'KEKKAI_BTN_CANCEL' | translate}}
+                </button>
+
+                <button type="button"
+                    class="btn btn-primary"
+                    ng-disabled="!$kekkaiDataview.kekkaiData.$isDirty || !$kekkaiDataview.kekkaiData.$isDataValid"
+                    ng-click="$kekkaiDataview.doCommit($kekkaiDataview.container.todoGroup.editingTodo)">
+
+                    <span class="glyphicon glyphicon-floppy-disk"></span> {{'KEKKAI_BTN_COMMIT' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

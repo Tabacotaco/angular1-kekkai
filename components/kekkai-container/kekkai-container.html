@@ -1,0 +1,412 @@
+<div id="{{::$kekkaiContainer.containerID}}" class="kekkai-container">
+
+    <!-- TODO 1. Navbar -->
+    <nav ng-if="$kekkaiContainer.isNavbarVisible || !$kekkaiContainer.isPagable" class="navbar kekkai-navbar hbar">
+
+        <!-- 僅有選擇類型之動作時, 顯示請選取資料 -->
+        <ul class="kekkai-nav kekkai-navbar-msg"
+            ng-if="!$kekkaiContainer.isSelectionMode
+                && !$kekkaiContainer.isOnlineEditing
+                && 'FORM' !== $kekkaiContainer.layoutType
+                && $kekkaiContainer.todoGroup.getAllowedTodos('TOOLBAR', $kekkaiContainer.datalist).length === 0
+                && $kekkaiContainer.todoGroup.getAllowedTodos('SELECTION', $kekkaiContainer.datalist).length > 0">
+
+            <li><a>{{::'KEKKAI_MSG_SELECT_TODO' | translate}}</a></li>
+        </ul>
+
+        <!-- 根據當前選取狀態, 決定呈現一般 / 選擇類型之動作按鈕 -->
+        <ul class="kekkai-nav" ng-if="!$kekkaiContainer.isOnlineEditing">
+            <li ng-repeat="todo in $kekkaiContainer.todoGroup.getAllowedTodos(
+                $kekkaiContainer.isSelectionMode && 'FORM' !== $kekkaiContainer.layoutType? 'SELECTION' : 'TOOLBAR',
+                $kekkaiContainer.datalist
+            )"  ng-switch="$kekkaiContainer.todoGroup.isTodoExecutable(todo, $kekkaiContainer.selectedData, true)">
+
+                <a class="btn kekkai-btn"
+                    ng-switch-when="true"
+                    ng-click="todo.execute($kekkaiContainer[$kekkaiContainer.isSelectionMode? 'selectedData' : 'datalist'])">
+                    <span class="{{::todo.icon}}"></span> {{::todo.text | translate}}
+                </a>
+
+                <a class="btn kekkai-btn" ng-switch-default disabled>
+                    <span class="{{::todo.icon}}"></span> {{::todo.text | translate}}
+                </a>
+            </li>
+        </ul>
+
+        <!-- 若為 Online 編輯模式, 則顯示 [Save] & [Cancel] 按鈕 -->
+        <ul class="kekkai-nav" ng-if="$kekkaiContainer.isOnlineEditing">
+            <li>
+                <a class="btn btn-primary kekkai-btn"
+                    ng-disabled="!$kekkaiContainer.isOnlineCommitable"
+                    ng-click="$kekkaiContainer.doCommitOnlineEdited()">
+                    <span class="glyphicon glyphicon-floppy-disk"></span> {{'KEKKAI_BTN_COMMIT' | translate}}
+                </a>
+            </li>
+
+            <li>
+                <a class="btn kekkai-btn" ng-click="$kekkaiContainer.doCancelOnlineEditing()">
+                    <span class="glyphicon glyphicon-remove"></span> {{'KEKKAI_BTN_CANCEL' | translate}}
+                </a>
+            </li>
+        </ul>
+
+        <hr/>
+
+        <!-- 資料輸出版面控制 (僅限 GRID) -->
+        <ul ng-if="$kekkaiContainer.isFavouriteVisible && !$kekkaiContainer.isOnlineEditing" class="kekkai-nav">
+            <li ng-if="$kekkaiContainer.favourites.length > 0" class="dropdown favourite-dropdown">
+                <a class="btn kekkai-btn dropdown-toggle"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+
+                    {{::'KEKKAI_FAVOURITE_LABEL_SIMPLE' | translate}} - {{$kekkaiContainer.favouriteLayout.desc | translate}}
+                    <span class="caret"></span>
+                </a>
+
+                <ul class="dropdown-menu checked-dropdown">
+                    <li>
+                        <a class="btn kekkai-btn" ng-click="$kekkaiContainer.doSwitchFavourite('KEKKAI_DEF_FAVOURITE')">
+                            <span class="glyphicon" ng-class="{
+                                'glyphicon-unchecked' : $kekkaiContainer.favouriteLayout.uid !== 'KEKKAI_DEF_FAVOURITE',
+                                'glyphicon-check'     : $kekkaiContainer.favouriteLayout.uid === 'KEKKAI_DEF_FAVOURITE'
+                            }"></span>
+                            {{::'KEKKAI_DEF_FAVOURITE' | translate}}
+                        </a>
+                    </li>
+
+                    <li class="divider"></li>
+
+                    <li ng-repeat="favourite in $kekkaiContainer.favourites" class="favourite-option">
+                        <a class="btn kekkai-btn" ng-click="$kekkaiContainer.doSwitchFavourite(favourite.uid)">
+                            <button type="button" class="close" ng-click="$kekkaiContainer.doRemoveFavourite($event, favourite.uid)">
+                                <span>&times;</span>
+                            </button>
+
+                            <span class="glyphicon" ng-class="{
+                                'glyphicon-unchecked' : $kekkaiContainer.favouriteLayout.uid !== favourite.uid,
+                                'glyphicon-check'     : $kekkaiContainer.favouriteLayout.uid === favourite.uid
+                            }"></span>
+                            {{favourite.desc}}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li title="{{::'KEKKAI_SAVE_FAVOURITE' | translate}}">
+                <a class="btn kekkai-btn" ng-click="$kekkaiContainer.doSaveFavourite()">
+                    <span class="glyphicon glyphicon-pushpin"></span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- 當設定資料為不須分頁之模式, 則於此處顯示資料筆數資訊 -->
+        <ul ng-if="!$kekkaiContainer.isPagable && 'def' !== $kekkaiContainer.windowSize"
+            class="kekkai-nav kekkai-navbar-msg">
+
+            <!-- 無可顯示條目 -->
+            <li ng-if="$kekkaiContainer.pager.total === 0">
+                <a>{{::'KEKKAI_LIST_NO_DATA' | translate}}</a>
+            </li>
+
+            <!-- 總筆數 -->
+            <li ng-if="$kekkaiContainer.pager.total > 0">
+                <a>{{'KEKKAI_LIST_SUM' | translate: $kekkaiContainer.pager}}</a>
+            </li>
+        </ul>
+
+        <!-- 用於 Xs-Size 下, 將 Export & Refresh 按鈕轉為下拉選單 -->
+        <ul ng-if="!$kekkaiContainer.isPagable && 'def' === $kekkaiContainer.windowSize
+            && ($kekkaiContainer.isExportable || $kekkaiContainer.pager.total > 0) && !$kekkaiContainer.isOnlineEditing"
+            class="kekkai-nav dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false">
+
+            <li>
+                <a class="btn kekkai-btn">
+                    <span class="glyphicon glyphicon-menu-hamburger"></span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- 當設定資料為不須分頁之模式, 則於此處呈現 Refresh & Export 按鈕 -->
+        <ul ng-if="!$kekkaiContainer.isPagable && !$kekkaiContainer.isOnlineEditing"
+            class="kekkai-nav dropdown-menu-right"
+            ng-class="{'dropdown-menu': ('def' === $kekkaiContainer.windowSize)}">
+            <li ng-if="$kekkaiContainer.isExportable" title="{{::'EXPORT' | translate}}">
+                <a class="btn kekkai-btn" ng-click="$kekkaiContainer.onExport()">
+                    <span class="glyphicon glyphicon-open"></span>
+                    <ng-container ng-if="'def' === $kekkaiContainer.windowSize">{{::'EXPORT' | translate}}</ng-container>
+                </a>
+            </li>
+
+            <li ng-if="$kekkaiContainer.pager.total > 0" title="{{::'REFRESH_BUTTON' | translate}}">
+                <a class="btn kekkai-btn" ng-click="$kekkaiContainer.onRefresh($kekkaiContainer.allPageSize === $kekkaiContainer.pager.pageSize)">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                    <ng-container ng-if="'def' === $kekkaiContainer.windowSize">{{::'REFRESH_BUTTON' | translate}}</ng-container>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- TODO 2. Pager -->
+    <nav class="navbar kekkai-navbar hbar" ng-if="$kekkaiContainer.isRequestCase && $kekkaiContainer.isPagable">
+
+        <!-- 資料分頁控制 -->
+        <ul class="kekkai-nav" ng-if="$kekkaiContainer.allPageSize !== $kekkaiContainer.pager.pageSize">
+
+            <!-- 回到第一頁 -->
+            <li title="{{::'KEKKAI_FIRST_PAGE' | translate}}">
+                <a class="btn kekkai-btn"
+                    ng-click="$kekkaiContainer.pager.toFirst()"
+                    ng-disabled="$kekkaiContainer.pager.page === 1 || $kekkaiContainer.isOnlineEditing">
+
+                    <span class="glyphicon glyphicon-step-backward"></span>
+                </a>
+            </li>
+
+            <!-- 回上一頁 -->
+            <li title="{{::'KEKKAI_PREV_PAGE' | translate}}">
+                <a class="btn kekkai-btn"
+                    ng-click="$kekkaiContainer.pager.toPrev()"
+                    ng-disabled="$kekkaiContainer.pager.page === 1 || $kekkaiContainer.isOnlineEditing">
+
+                    <span class="glyphicon glyphicon-triangle-left"></span>
+                </a>
+            </li>
+
+            <!-- 輸入指定頁數做跳轉 -->
+            <li>
+                <input class="form-control kekkai-pager-input"
+                    type="number"
+                    min="1"
+                    max="{{$kekkaiContainer.pager.maxPage}}"
+                    ng-model-options="{debounce: 400}"
+                    ng-model="$kekkaiContainer.pager.page"
+                    ng-disabled="$kekkaiContainer.pager.total === 0 || $kekkaiContainer.isOnlineEditing" />
+            </li>
+
+            <!-- 跳至下一頁 -->
+            <li title="{{::'KEKKAI_NEXT_PAGE' | translate}}">
+                <a class="btn kekkai-btn"
+                    ng-click="$kekkaiContainer.pager.toNext()"
+                    ng-disabled="$kekkaiContainer.pager.page === $kekkaiContainer.pager.maxPage || $kekkaiContainer.isOnlineEditing">
+
+                    <span class="glyphicon glyphicon-triangle-right"></span>
+                </a>
+            </li>
+
+            <!-- 跳至最後一頁 -->
+            <li title="{{::'KEKKAI_LAST_PAGE' | translate}}">
+                <a class="btn kekkai-btn"
+                    ng-click="$kekkaiContainer.pager.toLast()"
+                    ng-disabled="$kekkaiContainer.pager.page === $kekkaiContainer.pager.maxPage || $kekkaiContainer.isOnlineEditing">
+
+                    <span class="glyphicon glyphicon-step-forward"></span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- 調整每頁呈現資料筆數 -->
+        <ul ng-if="'GRID' === $kekkaiContainer.layoutType && 'def' !== $kekkaiContainer.windowSize" class="kekkai-nav">
+            <li class="dropdown">
+                <a class="btn kekkai-btn dropdown-toggle kekkai-page-size"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    ng-disabled="$kekkaiContainer.isOnlineEditing">
+                    
+                    <ng-container ng-if="$kekkaiContainer.allPageSize !== $kekkaiContainer.pager.pageSize">
+                        {{'KEKKAI_PAGE_SIZE' | translate: $kekkaiContainer.pager}}
+                        <span class="caret"></span>
+                    </ng-container>
+
+                    <ng-container ng-if="$kekkaiContainer.allPageSize === $kekkaiContainer.pager.pageSize">
+                        {{::'KEKKAI_ALL_DATA' | translate}}
+                        <span class="caret"></span>
+                    </ng-container>
+                </a>
+
+                <ul class="dropdown-menu checked-dropdown" ng-if="!$kekkaiContainer.isOnlineEditing">
+                    <li ng-if="$kekkaiContainer.allpagable !== false">
+                        <a class="btn kekkai-btn" ng-click="$kekkaiContainer.pager.pageSize = $kekkaiContainer.allPageSize">
+                            <span class="glyphicon" ng-class="{
+                                'glyphicon-unchecked' : $kekkaiContainer.pager.pageSize !== $kekkaiContainer.allPageSize,
+                                'glyphicon-check'     : $kekkaiContainer.pager.pageSize === $kekkaiContainer.allPageSize
+                            }"></span>
+
+                            {{::'KEKKAI_ALL_DATA' | translate}}
+                        </a>
+                    </li>
+
+                    <li class="divider"></li>
+
+                    <li>
+                        <a class="btn kekkai-btn" ng-click="$kekkaiContainer.pager.pageSize = 50">
+                            <span class="glyphicon" ng-class="{
+                                'glyphicon-unchecked' : $kekkaiContainer.pager.pageSize !== 50,
+                                'glyphicon-check'     : $kekkaiContainer.pager.pageSize === 50
+                            }"></span>
+
+                            50 {{::'KEKKAI_PAGE_SIZE_OPT' | translate}}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="btn kekkai-btn" ng-click="$kekkaiContainer.pager.pageSize = 25">
+                            <span class="glyphicon" ng-class="{
+                                'glyphicon-unchecked' : $kekkaiContainer.pager.pageSize !== 25,
+                                'glyphicon-check'     : $kekkaiContainer.pager.pageSize === 25
+                            }"></span>
+    
+                            25 {{::'KEKKAI_PAGE_SIZE_OPT' | translate}}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="btn kekkai-btn" ng-click="$kekkaiContainer.pager.pageSize = 10">
+                            <span class="glyphicon" ng-class="{
+                                'glyphicon-unchecked' : $kekkaiContainer.pager.pageSize !== 10,
+                                'glyphicon-check'     : $kekkaiContainer.pager.pageSize === 10
+                            }"></span>
+    
+                            10 {{::'KEKKAI_PAGE_SIZE_OPT' | translate}}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <hr/>
+
+        <!-- 顯示資料筆數資訊 -->
+        <ul ng-if="'def' !== $kekkaiContainer.windowSize"
+            class="kekkai-nav kekkai-navbar-msg">
+
+            <!-- 無可顯示條目 -->
+            <li ng-if="$kekkaiContainer.pager.total === 0">
+                <a>{{::'KEKKAI_LIST_NO_DATA' | translate}}</a>
+            </li>
+
+            <!-- 顯示條目範圍 -->
+            <li ng-if="$kekkaiContainer.pager.total > 0 && $kekkaiContainer.allPageSize !== $kekkaiContainer.pager.pageSize && 'FORM' !== $kekkaiContainer.layoutType">
+                <a>{{'KEKKAI_LIST_RANGE' | translate: $kekkaiContainer.pager}}</a>
+            </li>
+
+            <!-- 總筆數 -->
+            <li ng-if="$kekkaiContainer.pager.total > 0">
+                <a>{{'KEKKAI_LIST_SUM' | translate: $kekkaiContainer.pager}}</a>
+            </li>
+        </ul>
+
+        <!-- 用於 Xs-Size 下, 將 Export & Refresh 按鈕轉為下拉選單 -->
+        <ul ng-if="'def' === $kekkaiContainer.windowSize && !$kekkaiContainer.isOnlineEditing
+            && ($kekkaiContainer.isExportable || $kekkaiContainer.pager.total > 0)"
+            class="kekkai-nav dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false">
+            <li>
+                <a class="btn kekkai-btn">
+                    <span class="glyphicon glyphicon-menu-hamburger"></span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- 呈現 Refresh & Export 按鈕 -->
+        <ul class="kekkai-nav dropdown-menu-right"
+            ng-class="{'dropdown-menu': ('def' === $kekkaiContainer.windowSize)}"
+            ng-if="!$kekkaiContainer.isOnlineEditing">
+
+            <li ng-if="$kekkaiContainer.isExportable" title="{{::'EXPORT' | translate}}">
+                <a class="btn kekkai-btn" ng-click="$kekkaiContainer.onExport()">
+                    <span class="glyphicon glyphicon-open"></span>
+                    <ng-container ng-if="'def' === $kekkaiContainer.windowSize">{{::'EXPORT' | translate}}</ng-container>
+                </a>
+            </li>
+
+            <li ng-if="$kekkaiContainer.pager.total > 0" title="{{::'REFRESH_BUTTON' | translate}}">
+                <a class="btn kekkai-btn" ng-click="$kekkaiContainer.onRefresh($kekkaiContainer.allPageSize === $kekkaiContainer.pager.pageSize)">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                    <ng-container ng-if="'def' === $kekkaiContainer.windowSize">{{::'REFRESH_BUTTON' | translate}}</ng-container>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- TODO 3. Header -->
+    <div ng-if="'GRID' === $kekkaiContainer.layoutType" class="kekkai-grid-header kekkai-list">
+
+        <label class="grid-selection" ng-switch="$kekkaiContainer.isAllSelectable && !$kekkaiContainer.isOnlineEditing">
+            <input type="checkbox" ng-switch-when="true" class="grid-selection-box" ng-model="$kekkaiContainer.isAllSelected" />
+            <span ng-switch-default></span>
+        </label>
+
+        <div ng-class="{'padding-browser': !$kekkaiContainer.isMobile, 'padding-mobile': $kekkaiContainer.isMobile}">
+            <div id="{{::$kekkaiContainer.headerID}}" class="row">
+                <div ng-repeat="field in $kekkaiContainer.virtuals | orderBy: $kekkaiContainer.headerOrderBy"
+                    class="kekkai-column"
+                    data-field-name="{{::field.fieldName}}"
+                    ng-class="$kekkaiContainer.generateHeaderCls(field)"
+                    ng-init="$last? $kekkaiContainer.doHeaderInit() : null">
+
+                    <span ng-class="{'kekkai-required': $kekkaiContainer.isOnlineEditing && field.isRequired}" ng-click="$kekkaiContainer.onSorting(field)">
+                        {{::field.label | translate}}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div ng-if="!$kekkaiContainer.isMobile" class="dropdown grid-dashboard">
+            <a ng-if="$kekkaiContainer.isFavouriteVisible" class="dropdown-toggle kekkai-btn"
+                id="{{::$kekkaiContainer.cdshbID}}"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="true"
+                ng-init="$kekkaiContainer.onColumnDashboardInit()">
+
+                <span class="caret"></span>
+            </a>
+
+            <ul ng-if="$kekkaiContainer.isFavouriteVisible"
+                kekkai-fixed-dropdown="{{::$kekkaiContainer.cdshbID}}"
+                class="dropdown-menu checked-dropdown">
+
+                <li ng-repeat="field in $kekkaiContainer.virtuals"
+                    ng-if="field.getColspan($kekkaiContainer.layoutMode.toLowerCase(), $kekkaiContainer.layoutType, true) > 0">
+
+                    <a ng-click="$kekkaiContainer.doSwitchFieldVisible($event, field)">
+                        <span class="glyphicon" ng-class="{
+                            'glyphicon-unchecked' : !field.getTempVisible($kekkaiContainer.layoutMode.toLowerCase()),
+                            'glyphicon-check'     : field.getTempVisible($kekkaiContainer.layoutMode.toLowerCase())
+                        }"></span>
+                        {{::field.label | translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <ng-transclude ng-transclude-slot="dataview" ng-if="$kekkaiContainer.virtuals.length === 0 || $kekkaiContainer.virtuals.length < $kekkaiContainer.$headerFieldEl.length"></ng-transclude>
+    </div>
+
+    <!-- TODO 4. Dataview -->
+    <div kekkai-infinite-scroll
+        class="{{::'kekkai-content ' + $kekkaiContainer.layoutType.toLowerCase() + '-content'}}"
+        ng-class="{'online-editing': $kekkaiContainer.isOnlineEditing}"
+        on-scroll-bottom="$kekkaiContainer.pager.pageSize === $kekkaiContainer.allPageSize? $kekkaiContainer.pager.toNext() : null">
+
+        <!-- [ALERT] - Data Not Found -->
+        <h1 ng-if="$kekkaiContainer.datalist.length === 0" class="kekkai-data-not-found">{{::'KEKKAI_DATA_NOT_FOUND' | translate}}</h1>
+
+        <!-- [CONTENT] - Data Result List -->
+        <ng-transclude ng-transclude-slot="dataview" ng-if="$kekkaiContainer.datalist.length > 0"></ng-transclude>
+    </div>
+
+    <div ng-if="$kekkaiContainer.isBottomScrollVisible"
+        kekkai-horizontal-scroll
+        container-id="{{::$kekkaiContainer.containerID}}"
+        class="bottom-scroll">
+        <div ng-style="{width: $kekkaiContainer.bottomScrollWidth}"></div>
+    </div>
+</div>

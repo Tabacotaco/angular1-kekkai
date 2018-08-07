@@ -1,0 +1,19 @@
+div.kekkai-clear-field { position: relative; }
+
+div.kekkai-clear-field > button.close.kekkai-clear-btn {
+	position: absolute;
+	right: 6px;
+    height: calc(100% - 2px);
+	line-height: 100%;
+	display: none;
+	opacity: 1;
+}
+
+div.kekkai-clear-field:hover > button.close.kekkai-clear-btn {
+	display: block;
+}
+
+div.kekkai-clear-field:hover > button.close.kekkai-clear-btn + input,
+div.kekkai-clear-field:hover > button.close.kekkai-clear-btn + textarea {
+	padding-right: 24px;
+}

@@ -1,0 +1,82 @@
+div.kekkai-content.form-content {
+    padding: 4px;
+    overflow-y: hidden;
+    overflow-x: auto;
+    background-color: white;
+}
+
+/* Column */
+@media all {
+
+    /* Column Cell */
+    div.kekkai-content.form-content div.kekkai-column > div.form-group {
+        color: black;
+        padding: 0 8px;
+    }
+
+    /* Label */
+    kekkai-field > div.kekkai-column > div.form-group > label.kekkai-required::before {
+        content: "*";
+        margin-right: 4px;
+        color: #a94442;
+    }
+
+    kekkai-field > div.kekkai-column > div.form-group > label {
+        line-height: 1;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -o-user-select: none;
+    }
+
+    /* Value Cell */
+    kekkai-field > div.kekkai-column > div.form-group > div.form-control {
+        display: flex;
+        overflow : hidden;
+        text-overflow : ellipsis;
+        white-space : nowrap;
+    }
+
+    kekkai-field > div.kekkai-column.kekkai-textalign-left   > div.form-group > div.form-control { justify-content: flex-start !important; }
+    kekkai-field > div.kekkai-column.kekkai-textalign-center > div.form-group > div.form-control { justify-content: center !important; }
+    kekkai-field > div.kekkai-column.kekkai-textalign-right  > div.form-group > div.form-control { justify-content: flex-end !important; }
+}
+
+@media (min-width: 768px) {
+
+    kekkai-field > div.kekkai-column > div.form-group {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        margin: 1px;
+    }
+
+    kekkai-field > div.kekkai-column > div.form-group > label {
+        display: flex;
+        align-items: center;
+		justify-content: flex-end;
+		text-align: right;
+        height:  34px;
+        margin: 0;
+        padding: 0 8px;
+    }
+
+    div.kekkai-content.form-content div.kekkai-column.row-1 > div.form-group > div.form-control { height:  34px; }
+    div.kekkai-content.form-content div.kekkai-column.row-2 > div.form-group > div.form-control { height:  72px; }
+    div.kekkai-content.form-content div.kekkai-column.row-3 > div.form-group > div.form-control { height: 110px; }
+    div.kekkai-content.form-content div.kekkai-column.row-4 > div.form-group > div.form-control { height: 148px; }
+    div.kekkai-content.form-content div.kekkai-column.row-5 > div.form-group > div.form-control { height: 156px; }
+    div.kekkai-content.form-content div.kekkai-column.row-6 > div.form-group > div.form-control { height: 194px; }
+}
+
+@media (max-width: 767px) {
+
+    kekkai-field > div.kekkai-column > div.form-group { display: block; }
+
+    div.kekkai-content.form-content div.kekkai-column.row-1 > div.form-group > div.form-control { height: calc( 34px); }
+    div.kekkai-content.form-content div.kekkai-column.row-2 > div.form-group > div.form-control { height: calc( 72px + 25px * 1); }
+    div.kekkai-content.form-content div.kekkai-column.row-3 > div.form-group > div.form-control { height: calc(110px + 25px * 2); }
+    div.kekkai-content.form-content div.kekkai-column.row-4 > div.form-group > div.form-control { height: calc(148px + 25px * 3); }
+    div.kekkai-content.form-content div.kekkai-column.row-5 > div.form-group > div.form-control { height: calc(156px + 25px * 4); }
+    div.kekkai-content.form-content div.kekkai-column.row-6 > div.form-group > div.form-control { height: calc(194px + 25px * 5); }
+}

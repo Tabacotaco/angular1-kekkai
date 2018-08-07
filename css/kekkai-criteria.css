@@ -1,0 +1,3 @@
+form.kekkai-criteria > button[type=submit] {
+    display: none !important;
+}

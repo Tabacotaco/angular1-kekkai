@@ -1,0 +1,35 @@
+button.kekkai-aggregate-header:first-child {
+    margin-top: 8px;
+}
+
+button.kekkai-aggregate-header {
+    width: calc(100% - 8px);
+    height: 44px;
+    border-radius: 22px 0 0 22px;
+    padding-left: 22px;
+    text-align: left;
+    margin: 4px 0 4px 8px;
+    font-weight: bold;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+
+button.kekkai-aggregate-header::before {
+    position: relative;
+    top: 1px;
+    margin-right: 8px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+button.kekkai-aggregate-header.kekkai-collapsed::before {
+    content: "\e250";
+}
+
+button.kekkai-aggregate-header:not(.kekkai-collapsed)::before {
+    content: "\e252";
+}

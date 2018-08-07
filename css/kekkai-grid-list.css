@@ -1,0 +1,281 @@
+/* Grid Header */
+@media all {
+
+    /* Header Content */
+    div.kekkai-grid-header.kekkai-list {
+        padding: 2px; 
+        border-radius: 4px;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -o-user-select: none;
+        background-color: #d9ecf5;
+        border: 1px solid #bbdceb;
+    }
+
+    div.kekkai-column.kekkai-sort-asc > span::after {
+        content: "\e253";
+        font-family: 'Glyphicons Halflings';
+        font-size: 10px;
+        margin-top: 2px;
+        margin-left: 8px;
+    }
+    
+    div.kekkai-column.kekkai-sort-desc > span::after {
+        content: "\e252";
+        font-family: 'Glyphicons Halflings';
+        font-size: 10px;
+        margin-top: 2px;
+        margin-left: 8px;
+    }
+
+    div.kekkai-grid-header.kekkai-list div.kekkai-column > span:hover,
+    div.kekkai-grid-header.kekkai-list > div.grid-dashboard a:hover {
+        cursor: pointer;
+        border-radius: 4px;
+        font-weight: bold;
+        color: white;
+        background-color: #7db2f6;
+        border: 1px solid white;
+    }
+
+    /* Header Dashboard */
+    div.kekkai-grid-header.kekkai-list > div.grid-dashboard > a.dropdown-toggle {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        width: 100%;
+        height: 100%;
+        font-size: 12px;
+        top: 0;
+        left: 0;
+    }
+
+    div.kekkai-grid-header.kekkai-list > div.grid-dashboard > a.dropdown-toggle > span.caret { margin-left: 0; }
+
+    div.kekkai-grid-header.kekkai-list > div.grid-dashboard > ul.dropdown-menu {
+        position: fixed !important;
+        left: auto !important;
+        max-height: 280px;
+        border-radius: 4px;
+        overflow-y: auto;
+        background-color: #d9ecf5;
+        border: 1px solid #bbdceb;
+    }
+
+    div.kekkai-grid-header.kekkai-list > div.grid-dashboard a {
+        color: #337ab7;
+    }
+
+    /* Header Column */
+    div.kekkai-grid-header.kekkai-list div.kekkai-column > span {
+        justify-content: center;
+    }
+
+    div.kekkai-list.kekkai-grid-header div.kekkai-column > span.kekkai-required::before {
+        content: "*";
+        margin-right: 4px;
+        color: #a94442;
+    }
+}
+
+@media (min-width: 768px) {
+    div.kekkai-grid-header.kekkai-list > div.grid-dashboard {
+		position: relative;
+		padding: 0 9px;
+	}
+}
+
+@media (max-width: 767px) {
+	div.kekkai-list.kekkai-grid-header > div.padding-browser { padding-right: 16px; }
+	div.kekkai-list.kekkai-grid-header > div.grid-dashboard  { display: none !important; }
+}
+
+
+/* Grid List */
+@media all {
+
+    div.kekkai-content.grid-content {
+        border-width: 0 0 1px 1px;
+        padding: 0;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        border-style: solid;
+        border-bottom-left-radius: 4px;
+        min-height: 280px;
+        max-height: calc(100vh - 280px);
+        border-color: #bbdceb;
+        background-color: white;
+    }
+
+    /* 不可編輯之欄位需使用特殊顏色標記 */
+    div.kekkai-content.grid-content.grid-content.online-editing kekkai-field > div.kekkai-column > div.grid-group.kekkai-uneditable {
+        background-color: #eee;
+        color: #3c763d;
+        border-color: #ccc;
+    }
+
+    /* 可編輯之欄位則顯示點擊游標 */
+    div.kekkai-content.grid-content.grid-content.online-editing kekkai-field > div.kekkai-column > div.grid-group:not(.kekkai-uneditable) {
+        cursor: pointer;
+    }
+
+    kekkai-dataview > div.kekkai-list {
+        padding: 3px; 
+    }
+
+    /* 可點擊開啟 Row Menu 的資料列 */
+    kekkai-dataview > div.kekkai-list > label.grid-selection + div.row-clickable {
+        cursor: pointer !important;
+    }
+
+    /* 隔行換色 */
+    kekkai-dataview:nth-child(even) > div.kekkai-list {
+        background-color: #EFF6FA;
+    }
+
+    /* Hover 重點換色 */
+    kekkai-dataview > div.kekkai-list:hover {
+        background-color: #B9E3FF !important;
+    }
+
+    kekkai-dataview > div.kekkai-list:hover kekkai-field > div.kekkai-column > div{
+        border-color: white !important;
+    }
+
+    /* 錯誤資料列提示色 */
+    kekkai-dataview > div.kekkai-list.kekkai-invalid-row {
+        background-color: #f2dede !important;
+        border-color: #ebccd1 !important;
+    }
+
+    /* Row Menu Buttons */
+    kekkai-dataview > div.kekkai-list > ul.kekkai-row-menu > li > a {
+        cursor: pointer;
+    }
+
+    /* List Column */
+    kekkai-field > div.kekkai-column.kekkai-textalign-left   > div.grid-group { justify-content: flex-start !important; }
+    kekkai-field > div.kekkai-column.kekkai-textalign-center > div.grid-group { justify-content: center !important; }
+    kekkai-field > div.kekkai-column.kekkai-textalign-right  > div.grid-group { justify-content: flex-end !important; }
+}
+
+@media (min-width: 768px) {
+
+    kekkai-dataview > div.kekkai-list > label.grid-selection + div { margin-right: 2px; }
+}
+
+
+/* Content Bottom Scroll */
+@media (min-width: 768px) {
+
+	div.kekkai-grid-header + div.kekkai-content + div.bottom-scroll {
+		margin: 0 17px 0 42px;
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+
+	div.kekkai-grid-header + div.kekkai-content + div.bottom-scroll,
+	div.kekkai-grid-header + div.kekkai-content + div.bottom-scroll > div {
+		height: 17px;
+	}
+}
+
+
+/* Other Handler */
+@media all {
+
+    /* Dropdown List Mask */
+    body.dropdown-opening::before {
+        position: absolute;
+        content: "";
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 5;
+    }
+
+    /* jQuery UI Resizble 隱藏 */
+    div.ui-resizable-handle { opacity: 0; }
+
+    /* Header & List */
+    div.kekkai-list { width: 100%; }
+
+    div.kekkai-list > label.grid-selection                 { cursor: pointer; }
+    div.kekkai-list > label.grid-selection > *             { width: 14px; height: 14px; }
+    div.kekkai-list > label.grid-selection + div           { padding-bottom: 2px; }
+    div.kekkai-list > label.grid-selection + div > div.row { margin: 0; }
+
+    /* Column */
+    div.kekkai-list div.kekkai-column.row-1 { height:  34px; }
+    div.kekkai-list div.kekkai-column.row-2 { height:  70px; }
+    div.kekkai-list div.kekkai-column.row-3 { height: 106px; }
+    div.kekkai-list div.kekkai-column.row-4 { height: 142px; }
+    div.kekkai-list div.kekkai-column.row-5 { height: 178px; }
+    div.kekkai-list div.kekkai-column.row-6 { height: 214px; }
+
+    div.kekkai-list kekkai-field > div.kekkai-column > div.is-editing {
+        padding: 0;
+        border: none;
+    }
+
+    div.kekkai-grid-header.kekkai-list div.kekkai-column > span,
+    div.kekkai-list kekkai-field > div.kekkai-column > div:not(.is-editing) {
+        padding: 6px 8px;
+        border: 1px solid #bbdceb;
+    }
+
+    div.kekkai-grid-header.kekkai-list div.kekkai-column > span,
+    div.kekkai-list kekkai-field > div.kekkai-column > div {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        margin: 1px;
+        border-radius: 4px;
+        color: #337ab7;
+    }
+}
+
+@media (min-width: 768px) {
+
+	div.kekkai-list { display: flex; }
+
+	div.kekkai-list > label.grid-selection {
+		display: flex;
+    	align-items: center;
+		justify-content: center;
+		padding: 0 13px;
+    }
+
+    div.kekkai-list > label.grid-selection + div {
+        display: block;
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    div.kekkai-list > label.grid-selection + div > div.row {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    div.kekkai-list > label.grid-selection + div > div.row div.kekkai-column:not(.col-xs-0) {
+        display: inline-block !important;
+		float: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    div.kekkai-list { display: table; }
+	div.kekkai-list > label.grid-selection { width: 40px; }
+
+	div.kekkai-list > label.grid-selection,
+	div.kekkai-list > div {
+		display: table-cell;
+		text-align: center;
+    	vertical-align: middle;
+	}
+}

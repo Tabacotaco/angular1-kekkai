@@ -1,0 +1,91 @@
+/* Data Not Found */
+h1.kekkai-data-not-found {
+	width: 100%;
+	text-align: center;
+	line-height: 200px;
+    color: #ccc;
+    letter-spacing: 24px;
+    padding-left: 24px;
+}
+
+
+/* Kekkai Container's Data Content */
+div.kekkai-content { position: relative; }
+
+
+/* Kekkai Field */
+kekkai-field ng-transclude.editor-transclude { width: 100%; }
+
+.kekkai-column          { padding: 0 !important; margin: 1px 0 !important; }
+.kekkai-column.col-xs-0 { display: none !important; }
+
+ng-transclude.editor-transclude.kekkai-invalid > kekkai-editor > input,
+ng-transclude.editor-transclude.kekkai-invalid > kekkai-editor > select,
+ng-transclude.editor-transclude.kekkai-invalid > kekkai-editor > textarea,
+ng-transclude.editor-transclude.kekkai-invalid > kekkai-editor > div.kekkai-clear-field > input,
+ng-transclude.editor-transclude.kekkai-invalid > kekkai-editor > div.kekkai-clear-field > textarea {
+	border-color: #a94442 !important;
+}
+
+
+/* Edtor Modal */
+@media (min-width: 1200px) {
+    div.kekkai-modal.editing-modal.modal > div.modal-dialog {
+        width: 50%;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    div.kekkai-modal.editing-modal.modal > div.modal-dialog {
+        width: 66.66666667%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    div.kekkai-modal.editing-modal.modal > div.modal-dialog {
+        width: 83.33333333%;
+    }
+}
+
+
+/* Loading Mask */
+.kekkai-loading {
+    position: relative !important;
+}
+
+.kekkai-loading .kekkai-loading > div.kekkai-mask {
+    display: none !important;
+}
+
+.kekkai-loading > div.kekkai-mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    border-radius: 4px;
+    display: flex;
+	justify-content: center;
+	align-items: center;
+    background-color: rgba(0, 0, 0, .15);
+}
+
+.kekkai-loading > div.kekkai-mask > span.kekkai-loading-icon {
+    background-color: #d9ecf5;
+    font-size: 24px;
+    padding: 12px;
+    border-radius: 50%;
+    color: #337ab7;
+    border: 1px solid #bbdceb;
+    animation: loading-rotate 1.3s infinite;
+}
+
+@keyframes loading-rotate {
+    12.5% { transform: rotate( 45deg); }
+    25%   { transform: rotate( 90deg); }
+    37.5% { transform: rotate(135deg); }
+    50%   { transform: rotate(180deg); }
+    62.5% { transform: rotate(225deg); }
+    75%   { transform: rotate(270deg); }
+    87.5% { transform: rotate(315deg); }
+    100%  { transform: rotate(360deg); }
+ }
